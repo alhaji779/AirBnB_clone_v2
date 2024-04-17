@@ -6,9 +6,10 @@ from sqlalchemy.orm import relationship
 import os
 import models
 
+
 class Place(BaseModel, Base):
     """ A place to stay """
-    if os.environ.get('HBNB_TYPE_STORAGE') == 'db':    
+    if os.environ.get('HBNB_TYPE_STORAGE') == 'db':
         __tablename__ = "places"
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
@@ -23,7 +24,6 @@ class Place(BaseModel, Base):
         reviews = relationship('Review', backref='place',
                                cascade='all, delete-orphan',
                                passive_deletes=True)
-
 
     if os.environ.get('HBNB_TYPE_STORAGE') != 'db':
         @property
