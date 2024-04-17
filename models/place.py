@@ -21,6 +21,7 @@ place_amenity = Table(
         ForeignKey("amenities.id"),
         nullable=False))
 
+
 class Place(BaseModel, Base):
     """ A place to stay """
     if os.environ.get('HBNB_TYPE_STORAGE') == 'db':
@@ -38,8 +39,9 @@ class Place(BaseModel, Base):
         reviews = relationship('Review', backref='place',
                                cascade='all, delete-orphan',
                                passive_deletes=True)
-        amenities = relationship("Amenity", secondary=place_amenity,
-                             back_populates="place_amenities", viewonly=False)
+        amenities = relationship(
+                "Amenity", secondary=place_amenity,
+                back_populates="place_amenities", viewonly=False)
 
     if os.environ.get('HBNB_TYPE_STORAGE') != 'db':
         @property
@@ -49,7 +51,6 @@ class Place(BaseModel, Base):
             from models.review import Review
             return [review for review in models.storage.all(Review).values()
                     if review.place_id == self.id]
-
 
         @property
         def amenities(self):
