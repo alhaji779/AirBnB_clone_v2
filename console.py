@@ -2,6 +2,8 @@
 """ Console Module """
 import cmd
 import sys
+import shlex
+import models
 from models.base_model import BaseModel
 from models.__init__ import storage
 from models.user import User
@@ -10,7 +12,8 @@ from models.state import State
 from models.city import City
 from models.amenity import Amenity
 from models.review import Review
-
+from models.engine.file_storage import FileStorage
+from models.engine.db_storage import DBStorage
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -215,17 +218,19 @@ class HBNBCommand(cmd.Cmd):
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
         print_list = []
+        models.storage.reload()
+        cur_objs = models.storage.all()
 
         if args:
             args = args.split(' ')[0]  # remove possible trailing args
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage.all().items():
+            for k, v in cur_objs.items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage.all().items():
+            for k, v in cur_objs.items():
                 print_list.append(str(v))
 
         print(print_list)
