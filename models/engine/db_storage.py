@@ -39,8 +39,9 @@ class DBStorage:
         """
         all_dict = {}
         if cls is not None:
-            all_dict = {mdl.__class__.__name__ + "." + mdl.id: mdl for
-                       mdl in self.__session.query(classes[cls]).all()}
+            all_dict = {mdl.__class__.__name__ + "." + mdl.id:
+                        mdl for mdl in self.__session.query(
+                            classes[cls]).all()}
         else:
             for x in Base.__subclasses__():
                 all_t = self.__session.query(x).all()
