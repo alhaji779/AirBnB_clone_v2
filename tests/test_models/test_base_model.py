@@ -24,8 +24,11 @@ class test_basemodel(unittest.TestCase):
     def tearDown(self):
         try:
             os.remove('file.json')
-        except:
+        except FileNotFoundError:
             pass
+        except Exception as e:
+            # Handle other exceptions if needed
+            print("An error occurred:", e)
 
     def test_default(self):
         """ """
