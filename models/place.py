@@ -7,6 +7,20 @@ import os
 import models
 
 
+place_amenity = Table(
+    "place_amenity",
+    Base.metadata,
+    Column(
+        "place_id",
+        String(60),
+        ForeignKey("places.id"),
+        nullable=False),
+    Column(
+        "amenity_id",
+        String(60),
+        ForeignKey("amenities.id"),
+        nullable=False))
+
 class Place(BaseModel, Base):
     """ A place to stay """
     if os.environ.get('HBNB_TYPE_STORAGE') == 'db':
@@ -24,6 +38,8 @@ class Place(BaseModel, Base):
         reviews = relationship('Review', backref='place',
                                cascade='all, delete-orphan',
                                passive_deletes=True)
+        amenities = relationship("Amenity", secondary=place_amenity,
+                             back_populates="place_amenities", viewonly=False)
 
     if os.environ.get('HBNB_TYPE_STORAGE') != 'db':
         @property
@@ -33,3 +49,19 @@ class Place(BaseModel, Base):
             from models.review import Review
             return [review for review in models.storage.all(Review).values()
                     if review.place_id == self.id]
+
+
+        @property
+        def amenities(self):
+            """ Amenities method for FileStorage
+            """
+            return [amenity for amenity in models.storage.all(Amenity).values()
+                    if amenity.place_id == self.id]
+
+        @amenities.setter
+        def amenities(self, cls):
+            """ amenities setter
+            """
+            if not isinstance(cls, Amenity):
+                return
+            self.amenity_ids.append(cls.id)
