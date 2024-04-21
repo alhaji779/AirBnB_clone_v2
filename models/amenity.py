@@ -10,10 +10,10 @@ class Amenity(BaseModel, Base):
     """ Amenity Class"""
     __tablename__ = 'amenities'
     if os.getenv("HBNB_TYPE_STORAGE") == "db":
-        #__tablename__ = 'amenities'
+        # __tablename__ = 'amenities'
         name = Column(String(128), nullable=False)
     else:
-        name = ""
+        name = None
 
     def __init__(self, *args, **kwargs):
         """ method to initialize Amenity """
