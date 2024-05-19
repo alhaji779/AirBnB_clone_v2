@@ -38,16 +38,13 @@ class DBStorage:
         function to show dictionary of all objects in the database
         """
         all_dict = {}
-        if cls is not None:
-            all_dict = {mdl.__class__.__name__ + "." + mdl.id:
-                        mdl for mdl in self.__session.query(
-                            classes[cls]).all()}
-        else:
-            for x in Base.__subclasses__():
-                all_t = self.__session.query(x).all()
-                for mdl in all_t:
-                    all_dict[mdl.__class__.__name__ + "." + mdl.id] = mdl
-        return all_dict
+        for clss in classes:
+            if cls is None or cls is classes[clss] or cls is clss:
+                objs = self.__session.query(classes[clss]).all()
+                for obj in objs:
+                    key = obj.__class__.__name__ + '.' + obj.id
+                    all_dict[key] = obj
+        return (all_dict)
 
     def new(self, obj):
         """
@@ -77,4 +74,9 @@ class DBStorage:
         session_factory = sessionmaker(bind=self.__engine,
                                        expire_on_commit=False)
         Session = scoped_session(session_factory)
-        self.__session = Session()
+        self.__session = Session
+
+    def close(self):
+        """ Function to remove a session
+        """
+        self.__session.remove()
