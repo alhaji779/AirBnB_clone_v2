@@ -55,7 +55,7 @@ def ntemplate(n):
 def hevenodd(n):
     """ Function to render odd/even on html page
     """
-    if n%2 == 0:
+    if n % 2 == 0:
         e_type = 'even'
     else:
         e_type = 'odd'
